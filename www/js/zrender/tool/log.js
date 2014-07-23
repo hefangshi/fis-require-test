@@ -5,7 +5,7 @@
  */
 
 define(
-    function (require) {
+    ['require'], function (require) {
         var config = require('../config');
 
         return function() {

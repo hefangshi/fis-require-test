@@ -14,14 +14,16 @@ fis.config.set('roadmap.path', [
     }
 ]);
 
-function extHtml(content){
+var transform = require('../ast/lib/transform.js');
+
+function extHtml(content, file, opt){
     var reg = /(<script(?:(?=\s)[\s\S]*?["'\s\w\/\-]>|>))([\s\S]*?)(?=<\/script\s*>|$)|<!--(?!\[)([\s\S]*?)(-->|$)/ig;
     var replace = function(m, $1, $2, $3, $4, $5, $6, $7, $8){
         if($1){//<script>
             if (/(\ssrc\s*=\s*)('[^']+'|"[^"]+"|[^\s\/>]+)/ig.test($1) === false){
                 if(!/\s+type\s*=/i.test($1) || /\s+type\s*=\s*(['"]?)text\/javascript\1/i.test($1)) {
                     //without attrubite [type] or must be [text/javascript]
-                    m = $1 + extJs($2);
+                    m = $1 + extJs($2, file, opt);
                 }
             }
         }
@@ -30,7 +32,8 @@ function extHtml(content){
     return content.replace(reg, replace);
 }
 
-function extJs(content){
+function extJs(content, file, opt){
+    content = transform(file.getUrl(opt.hash, opt.domain) , null, content);
     var reg = /"(?:[^\\"\r\n\f]|\\[\s\S])*"|'(?:[^\\'\n\r\f]|\\[\s\S])*'|(\/\/[^\r\n\f]+|\/\*[\s\S]*?(?:\*\/|$))|\b(require)\s*\(\s*("(?:[^\\"\r\n\f]|\\[\s\S])*"|'(?:[^\\'\n\r\f]|\\[\s\S])*')\s*\)/g;
     var replace =  function(m, comment, require, value){
         if(require && value.indexOf('.') !== -1){
@@ -56,12 +59,12 @@ function replaceJs(content, map){
     return content.replace(reg, replace);
 }
 
-fis.config.set('modules.preprocessor.js', function(content){
-    return extJs(content);
+fis.config.set('modules.preprocessor.js', function(content, file, opt){
+    return extJs(content, file, opt);
 });
 
-fis.config.set('modules.preprocessor.html', function(content){
-    return extHtml(content);
+fis.config.set('modules.preprocessor.html', function(content, file, opt){
+    return extHtml(content, file, opt);
 });
 
 fis.config.set('modules.prepackager', function(ret){

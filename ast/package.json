@@ -1,0 +1,17 @@
+{
+  "name": "ast",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha ./test/parse.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "esprima": "^1.2.2"
+  },
+  "devDependencies": {
+    "should": "^4.0.4"
+  }
+}
