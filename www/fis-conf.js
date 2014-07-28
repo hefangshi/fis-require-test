@@ -24,6 +24,7 @@ fis.config.set('roadmap.path', [
     }
 ]);
 
+
 fis.config.set('pack',{
     'pkg/zrender.js' : [
         '/js/zrender/**'
@@ -33,6 +34,10 @@ fis.config.set('pack',{
     ]
 });
 
+
+/**
+ * 模拟fis-preprocessor-amd
+ */
 var transform = require('../ast/lib/transform.js');
 
 function extHtml(content, file, opt){
@@ -52,25 +57,7 @@ function extHtml(content, file, opt){
 }
 
 function extJs(content, file, opt){
-    var reg = /"(?:[^\\"\r\n\f]|\\[\s\S])*"|'(?:[^\\'\n\r\f]|\\[\s\S])*'|(\/\/[^\r\n\f]+|\/\*[\s\S]*?(?:\*\/|$))|\b(require)\s*\(\s*("(?:[^\\"\r\n\f]|\\[\s\S])*"|'(?:[^\\'\n\r\f]|\\[\s\S])*')\s*\)/g;
-    var replace =  function(m, comment, require, value){
-        if(require){
-            var info = fis.util.stringQuote(value);
-            if (value.indexOf('.') !== -1){
-                var id = fis.file.wrap(file.dirname + '/' + info.rest + '.js').getId();
-                m = 'require(' + info.quote + id + info.quote + ')';
-            }else{
-                var namespace = fis.config.get('namespace');
-                var connector = fis.config.get('namespaceConnector', ':');
-                if (namespace && info.rest.split(connector).shift() !== namespace){
-                    m = 'require(' + info.quote + namespace + connector + info.rest + info.quote + ')';
-                }
-            }
-        }
-        return m;
-    };
-    content = content.replace(reg, replace);
-    content = transform(file.getId() , null, content);
+    content = transform(file, content);
     return content;
 }
 
@@ -82,24 +69,16 @@ fis.config.set('modules.preprocessor.html', function(content, file, opt){
     return extHtml(content, file, opt);
 });
 
-// fis.config.set('modules.postpackager', 'autoload');
-
+/*
+模拟fis-postpackager-autoload
+ */
 fis.config.set('modules.postpackager', function(ret, conf, settings, opt){
     function injectSiteAsync(content) {
-        function genSiteAsyncMap() {
-            var asyncList = [];
-            fis.util.map(ret.map.res, function (id) {
-                asyncList.push(ret.ids[id]);
-            });
-            var subpath = (settings.subpath || 'pkg/map.js').replace(/^\//, '');
-            return genAsyncMap(asyncList, subpath);
-        }
-        var siteAsync = genSiteAsyncMap();
+        var siteAsync = genAsyncMap('pkg/map.js');
         return injectAsyncWithMap(content, siteAsync);
     }
 
-    function genAsyncMap(asyncList, subpath, usedSync) {
-        usedSync = usedSync || {};
+    function genAsyncMap(subpath) {
         //生成async加载需要使用的resourceMap
         var map = {
         };

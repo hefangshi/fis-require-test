@@ -1,19 +1,35 @@
 var esprima = require('esprima');
 var parse = require('./vendor/parse.js');
 
-function transform(moduleName, path, contents){
+function pathToID(file, path){
+    var namespace = fis.config.get('namespace');
+    var connector = fis.config.get('namespaceConnector', ':');
+    if (path.indexOf('.') !== -1){
+        return fis.file.wrap(file.dirname + '/' + path + '.js').getId();
+    }else if (['require','module','exports'].indexOf(path) !== -1){
+        return path;
+    }else if (namespace && path.split(connector).shift() !== namespace){
+        return namespace + connector + path;
+    }else{
+        return path;
+    }
+}
+
+function transform(file, contents){
     var astRoot, contentLines, modLine,
         foundAnon,
         scanCount = 0,
         scanReset = false,
-        defineInfos = [];
+        defineInfos = [],
+        ids = [],
+        moduleName = file.getId();
 
     try {
         astRoot = esprima.parse(contents, {
             loc: true
         });
     } catch (e) {
-        logger.trace('toTransport skipping ' + path + ': ' +
+        fis.log.notice('toTransport skipping ' + file.realpath + ': ' +
                      e.toString());
         return contents;
     }
@@ -44,6 +60,21 @@ function transform(moduleName, path, contents){
                 // keep going in that case.
             } else {
                 return false;
+            }
+        }
+
+        if (node.type === 'CallExpression' && node.callee && node.callee.type === 'Identifier' && node.callee.name === 'require'){
+            args = node.arguments;
+            if (args && args.length) {
+                firstArg = args[0];
+                if (firstArg.type === 'Literal' && typeof firstArg.value === 'string'){
+                    ids.push(firstArg);
+                }else if (firstArg.type === 'ArrayExpression' && firstArg.elements.length !== 0){
+                    firstArg.elements.forEach(function(element){
+                        element.async = true;
+                        ids.push(element);
+                    });
+                }
             }
         }
 
@@ -136,7 +167,7 @@ function transform(moduleName, path, contents){
             //set for transport form.
             if (range.needsId) {
                 if (foundAnon) {
-                    logger.trace(path + ' has more than one anonymous ' +
+                    logger.trace(file.realpath + ' has more than one anonymous ' +
                         'define. May be a built file from another ' +
                         'build system like, Ender. Skipping normalization.');
                     defineInfos = [];
@@ -163,7 +194,7 @@ function transform(moduleName, path, contents){
     });
 
 
-    if (!defineInfos.length) {
+    if (!defineInfos.length && !ids.length) {
         return contents;
     }
 
@@ -185,6 +216,21 @@ function transform(moduleName, path, contents){
                                                       line.length);
     };
 
+    ids.forEach(function (id){
+        var loc = id.loc,
+        startIndex = loc.start.column,
+        endIndex = loc.end.column,
+        //start.line is 1-based, not 0 based.
+        lineIndex = loc.start.line - 1,
+        line = contentLines[lineIndex];
+        var idWithNs = pathToID(file, id.value);
+        contentLines[lineIndex] = line.substring(0, startIndex+1) + idWithNs + line.substring(endIndex-1, line.length);
+        if (id.async){
+            file.extras.async = file.extras.async || [];
+            file.extras.async.push(idWithNs);
+        }
+    });
+
     defineInfos.forEach(function (info) {
         var deps,
             contentInsertion = '',
@@ -202,6 +248,7 @@ function transform(moduleName, path, contents){
 
             if (deps.length) {
                 depString = '[' + deps.map(function (dep) {
+                    dep = pathToID(file, dep);
                     return "'" + dep + "'";
                 }) + ']';
             } else {

@@ -1,10 +1,9 @@
 
-require(
-    [
-        'common:echarts',
+require([
+        './js/echarts/echarts.js',
         'common:echarts/chart/line',
-        'common:echarts/chart/bar'
-        // 'echarts/chart/map'
+        'echarts/chart/bar',
+        'echarts/chart/map'
     ],
     function (ec) {
         //--- 折柱 ---
@@ -53,28 +52,28 @@ require(
             ]
         });
         
-        // --- 地图 ---
-        // var myChart2 = ec.init(document.getElementById('mainMap'));
-        // myChart2.setOption({
-        //     tooltip : {
-        //         trigger: 'item',
-        //         formatter: '{b}'
-        //     },
-        //     series : [
-        //         {
-        //             name: '中国',
-        //             type: 'map',
-        //             mapType: 'china',
-        //             selectedMode : 'multiple',
-        //             itemStyle:{
-        //                 normal:{label:{show:true}},
-        //                 emphasis:{label:{show:true}}
-        //             },
-        //             data:[
-        //                 {name:'广东',selected:true}
-        //             ]
-        //         }
-        //     ]
-        // });
+        //--- 地图 ---
+        var myChart2 = ec.init(document.getElementById('mainMap'));
+        myChart2.setOption({
+            tooltip : {
+                trigger: 'item',
+                formatter: '{b}'
+            },
+            series : [
+                {
+                    name: '中国',
+                    type: 'map',
+                    mapType: 'china',
+                    selectedMode : 'multiple',
+                    itemStyle:{
+                        normal:{label:{show:true}},
+                        emphasis:{label:{show:true}}
+                    },
+                    data:[
+                        {name:'广东',selected:true}
+                    ]
+                }
+            ]
+        });
     }
 );
