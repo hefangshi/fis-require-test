@@ -1,6 +1,6 @@
 fis.config.set('roadmap.domain', 'http://127.0.0.1:8080');
-// fis.config.set('namespace', 'common');
-fis.config.set('namespaceConnector', '|');
+fis.config.set('namespace', 'common');
+// fis.config.set('namespaceConnector', '|');
 fis.config.set('roadmap.path', [
     {
         reg: /\/js\/zrender\/zrender\.js/i,
@@ -125,6 +125,7 @@ fis.config.set('modules.postpackager', function(ret, conf, settings, opt){
 
     function injectAsyncWithMap(content, resourceMapFile){
         var mapScript;
+        settings.useInlineMap = true;
         if (settings.useInlineMap){
             mapScript = '<script type="text/javascript" >\r\n' + resourceMapFile.getContent() + '\r\n</script>';
         }else{

@@ -1,9 +1,9 @@
 
 require(
     [
-        'echarts',
-        'echarts/chart/line',
-        'echarts/chart/bar'
+        'common:echarts',
+        'common:echarts/chart/line',
+        'common:echarts/chart/bar'
         // 'echarts/chart/map'
     ],
     function (ec) {
