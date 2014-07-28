@@ -210,11 +210,15 @@ function transform(file, contents){
         //start.line is 1-based, not 0 based.
         lineIndex = loc.start.line - 1,
         line = contentLines[lineIndex];
+        console.log(file.getId(), 'from', contentLines[lineIndex]);
         contentLines[lineIndex] = line.substring(0, startIndex) +
                                    contentInsertion +
                                    line.substring(startIndex,
                                                       line.length);
+        console.log(file.getId(), 'to', contentLines[lineIndex]);
     };
+
+    ids.reverse();
 
     ids.forEach(function (id){
         var loc = id.loc,
@@ -223,8 +227,10 @@ function transform(file, contents){
         //start.line is 1-based, not 0 based.
         lineIndex = loc.start.line - 1,
         line = contentLines[lineIndex];
+        console.log(file.getId(), 'from', contentLines[lineIndex]);
         var idWithNs = pathToID(file, id.value);
         contentLines[lineIndex] = line.substring(0, startIndex+1) + idWithNs + line.substring(endIndex-1, line.length);
+        console.log(file.getId(), 'to', contentLines[lineIndex]);
         if (id.async){
             file.extras.async = file.extras.async || [];
             file.extras.async.push(idWithNs);

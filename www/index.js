@@ -1,11 +1,5 @@
 
-require([
-        './js/echarts/echarts.js',
-        'common:echarts/chart/line',
-        'echarts/chart/bar',
-        'echarts/chart/map'
-    ],
-    function (ec) {
+require(['./js/echarts/echarts.js','common:echarts/chart/line','echarts/chart/bar','echarts/chart/map'], function (ec) {
         //--- 折柱 ---
         var myChart = ec.init(document.getElementById('main'));
         myChart.setOption({
