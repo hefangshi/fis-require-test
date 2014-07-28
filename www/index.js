@@ -1,5 +1,4 @@
-// Step:4 require echarts and use it in the callback.
-// Step:4 动态加载echarts然后在回调函数中开始使用，注意保持按需加载结构定义图表路径
+
 require(
     [
         'echarts',

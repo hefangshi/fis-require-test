@@ -5,6 +5,8 @@
     <title>ECharts</title>
     <!--Step:1 Import a module loader, such as esl.js or require.js-->
     <!--Step:1 引入一个模块加载器，如esl.js或者require.js-->
+    <!--<script src="http://s1.bdstatic.com/r/www/cache/ecom/esl/1-8-2/esl.source.js"></script>-->
+
     <script src="js/lib/require.js"></script>
 </head>
 
@@ -17,20 +19,20 @@
     <script type="text/javascript">
     // Step:3 conifg ECharts's path, link to echarts.js from current page.
     // Step:3 为模块加载器配置echarts的路径，从当前页面链接到echarts.js，定义所需图表路径
-    require.config({
-        packages:[
-            {
-                name: 'echarts',
-                location: './js/echarts',
-                main: 'echarts'
-            },
-            {
-                name: 'zrender',
-                location: './js/zrender',
-                main: 'zrender'
-            },            
-        ]
-    });
+    // require.config({
+    //     packages:[
+    //         {
+    //             name: 'echarts',
+    //             location: './js/echarts',
+    //             main: 'echarts'
+    //         },
+    //         {
+    //             name: 'zrender',
+    //             location: './js/zrender',
+    //             main: 'zrender'
+    //         },            
+    //     ]
+    // });
     </script>
     <script src="index.js"></script>
 </body>
