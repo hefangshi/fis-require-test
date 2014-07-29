@@ -10,10 +10,16 @@
     <div id="mainMap" style="height:500px;border:1px solid #ccc;padding:10px;"></div>
     <script type="text/javascript">
     require([
-        './js/echarts/echarts.js',
-        'common:echarts/chart/line',
+        //use relative path without ext (recommend)
+        './js/echarts/echarts',
+        //use absolute path without ext
+        '/js/echarts/chart/line',
+        //use relative path with ext
+        './js/echarts/chart/map.js',
+        //use fis resource id (recommend)
         'echarts/chart/bar',
-        'echarts/chart/map'
+        //internet resources
+        'http://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js'
     ], function (ec) {
             //--- 折柱 ---
             var myChart = ec.init(document.getElementById('main'));

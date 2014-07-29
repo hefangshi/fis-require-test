@@ -1,5 +1,5 @@
 fis.config.set('roadmap.domain', 'http://127.0.0.1:8080');
-fis.config.set('namespace', 'common');
+// fis.config.set('namespace', 'common');
 fis.config.set('roadmap.path', [
     {
         reg: /\/js\/zrender\/zrender\.js/i,
@@ -16,6 +16,15 @@ fis.config.set('roadmap.path', [
     {
         reg: /\/js\/echarts\/(.*)\.js/i,
         id: "echarts/$1"
+    },
+    {
+        reg: "**.html",
+        useMap: true,
+        extras: {
+            requirejs: {
+                // syncLoad : true
+            }
+        }
     }
 ]);
 
@@ -36,7 +45,7 @@ fis.config.set('modules.preprocessor.html', 'requirejs');
 fis.config.set('modules.postpackager', 'autoload');
 
 fis.config.set('settings.postpackager.autoload', {
-    codeGen:'requirejs',
+    type:'requirejs',
     useInlineMap:true
 });
 
