@@ -1773,7 +1773,7 @@ var requirejs, require, define;
     req.version = version;
 
     //Used to filter out dependencies that are already paths.
-    req.jsExtRegExp = /^\/|:\/\/|\?|\.js$/;
+    req.jsExtRegExp = /^\/|:|\?|\.js$/;
     req.isBrowser = isBrowser;
     s = req.s = {
         contexts: contexts,

@@ -9,6 +9,7 @@
     <div id="main" style="height:500px;border:1px solid #ccc;padding:10px;"></div>
     <div id="mainMap" style="height:500px;border:1px solid #ccc;padding:10px;"></div>
     <script type="text/javascript">
+    requirejs.jsExtRegExp = /^\/|:\/\/|\?/;
     require([
         //use relative path without ext (recommend)
         './js/echarts/echarts',
