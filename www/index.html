@@ -20,10 +20,10 @@
         //use fis resource id (recommend)
         'echarts/chart/bar',
         //internet resources
-        'http://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js'
-    ], function (ec) {
+        'jquery'
+    ], function (ec, line, map, bar, $) {
             //--- 折柱 ---
-            var myChart = ec.init(document.getElementById('main'));
+            var myChart = ec.init($('#main').get(0));
             myChart.setOption({
                 tooltip : {
                     trigger: 'axis'
