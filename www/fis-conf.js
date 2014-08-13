@@ -1,6 +1,9 @@
 fis.config.set('roadmap.domain', 'http://127.0.0.1:8080');
-fis.config.set('namespace', 'common');
 fis.config.set('roadmap.path', [
+    {
+        reg: "/js/lib/jquery.js",
+        id: 'jquery'
+    },
     {
         reg:"**.html",
         useMap:true
